@@ -24,26 +24,31 @@ export async function POST(req: NextRequest) {
 
     const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
-    // Corrected Prompt: Ask for pure HTML, not TSX.
+    // --- Refined Prompt for a Beautiful & Minimal Website ---
     const prompt = `
-      You are an expert web developer assistant who specializes in Tailwind CSS.
-      Generate the HTML code for a webpage about "${phrase}".
-      The entire response must be a single self-contained div element.
-      Use Tailwind CSS classes for all styling.
-      Do NOT include any TSX, JSX, or JSX-style comments like {/* ... */}.
-      Provide only the raw HTML code.
+      Generate the HTML for a beautiful and minimal webpage about: "${phrase}".
 
-      For example, for the phrase "dashboard", you must return valid HTML like this:
-      "<div class='p-8 bg-gray-100'><h1 class='text-3xl font-bold mb-4'>Dashboard</h1><p class='text-gray-700'>Welcome to your dashboard.</p></div>"
+      **Design Goals:**
+      - **Aesthetic:** The design must be clean, elegant, and professional. Focus on great typography and generous white space.
+      - **Theme:** Use a dark mode theme.
+      - **Layout:** Keep it simple, clean, and easy to read.
+
+      **Crucial Technical Rules:**
+      1.  The entire response MUST be a single \`<div>\` element.
+      2.  Use ONLY Tailwind CSS classes for all styling.
+      3.  You MUST NOT include \`<html>\`, \`<body>\`, \`<head>\`, \`<script>\` tags, or markdown formatting like \`\`\`html.
     `;
 
-    console.log('Generating content with Gemini (using model gemini-1.5-flash)...');
+    console.log('Generating content with Gemini (using refined minimal prompt)...');
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const text = response.text();
     console.log('Successfully generated content.');
 
-    return NextResponse.json({ code: text });
+    // Clean the response to remove potential markdown fences that the model might still add
+    const cleanedText = text.replace(/^```html\n?/, '').replace(/```$/, '').trim();
+
+    return NextResponse.json({ code: cleanedText });
   } catch (error) {
     console.error('--- ERROR IN API ROUTE ---');
     console.error(error);
