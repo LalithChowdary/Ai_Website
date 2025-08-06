@@ -24,22 +24,38 @@ export async function POST(req: NextRequest) {
 
     const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
-    // --- Refined Prompt for a Beautiful & Minimal Website ---
+    // --- Advanced, Adaptive Prompt for Websites & Games ---
     const prompt = `
-      Generate the HTML for a beautiful and minimal webpage about: "${phrase}".
+      ROLE: You are an expert front-end developer specializing in creating fully interactive, self-contained web applications and games using HTML, Tailwind CSS, and vanilla JavaScript.
 
-      **Design Goals:**
-      - **Aesthetic:** The design must be clean, elegant, and professional. Focus on great typography and generous white space.
-      - **Theme:** Use a dark mode theme.
-      - **Layout:** Keep it simple, clean, and easy to read.
+      TASK: Your goal is to generate the complete, functional code for a web experience based on the user's request: "${phrase}".
 
-      **Crucial Technical Rules:**
-      1.  The entire response MUST be a single \`<div>\` element.
-      2.  Use ONLY Tailwind CSS classes for all styling.
-      3.  You MUST NOT include \`<html>\`, \`<body>\`, \`<head>\`, \`<script>\` tags, or markdown formatting like \`\`\`html.
+      **PRIMARY DIRECTIVE: ANALYZE AND EXECUTE**
+      First, analyze the user's request.
+      - If it asks for a simple informational page (e.g., "a portfolio"), create a beautiful, minimal site with NO JAVASCRIPT.
+      - If it asks for a game or an interactive application (e.g., "a playable tic-tac-toe game", "a todo list app"), you MUST build a COMPLETE AND FULLY FUNCTIONAL application.
+
+      ---
+      **REQUIREMENTS FOR INTERACTIVE APPLICATIONS & GAMES (HIGHEST PRIORITY):**
+      ---
+      When building an interactive experience, it is not enough for it to just look correct. It MUST work.
+      - **Functionality is Paramount:** The application MUST be fully playable or usable from start to finish. All buttons, inputs, and game mechanics MUST work as expected. DO NOT omit any logic.
+      - **Complete JavaScript Logic:** You MUST write all necessary vanilla JavaScript inside a single \`<script>\` tag. This includes:
+          - **State Management:** Tracking scores, player turns, game state (e.g., 'gameover'), list items, etc.
+          - **Event Handling:** Proper event listeners for all user actions (clicks, form submissions, etc.).
+          - **Win/Loss/Draw Conditions:** Clear logic to determine the outcome of a game and display it to the user.
+      - **User Feedback:** The UI must provide clear feedback, such as "Player X's Turn," "You Win!," or updating lists and counters in real-time.
+      - **Self-Contained:** The code must not require any external files besides Tailwind CSS.
+
+      **--- CRUCIAL TECHNICAL RULES FOR ALL OUTPUTS ---**
+      1.  The entire response MUST be a single, self-contained \`<div>\` element.
+      2.  You MUST use ONLY Tailwind CSS classes for all styling.
+      3.  You MUST NOT include \`<html>\`, \`<body>\`, \`<head>\`, or markdown formatting like \`\`\`html.
+
+      **FINAL CHECK:** Before outputting, ask yourself: "Can a user copy this code, open it in a browser, and immediately play the game or use the application without any errors or missing features?" The answer must be YES.
     `;
 
-    console.log('Generating content with Gemini (using refined minimal prompt)...');
+    console.log('Generating content with Gemini (using advanced adaptive prompt)...');
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const text = response.text();
