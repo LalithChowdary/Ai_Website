@@ -18,7 +18,7 @@ export default function Home() {
       <main className="flex flex-col gap-8 items-center p-8">
         <h1 className="text-4xl font-bold text-center">Generate a Page with AI</h1>
         <p className="text-lg text-center text-gray-600">
-          Enter a word or phrase, and we'll generate a webpage for you.
+          Enter a word or phrase, and we&apos;ll generate a webpage for you.
         </p>
         <div className="flex gap-2 mt-4">
           <input
